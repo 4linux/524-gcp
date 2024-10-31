@@ -1,0 +1,11 @@
+[cicd]
+34.122.165.198 ansible_user=araujo_emerson28 ansible_ssh_private_key_file=terraform/id_rsa_gcp
+
+[cicd-tools]
+104.154.28.252 ansible_user=araujo_emerson28 ansible_ssh_private_key_file=terraform/id_rsa_gcp
+
+[k3s]
+35.225.121.210 ansible_user=araujo_emerson28 ansible_ssh_private_key_file=terraform/id_rsa_gcp
+
+[gitlab-ci]
+35.222.47.221 ansible_user=araujo_emerson28 ansible_ssh_private_key_file=terraform/id_rsa_gcp

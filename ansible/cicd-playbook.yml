@@ -1,0 +1,26 @@
+---
+- name: Incluir tasks para configurar cicd-tools
+  hosts: cicd-tools
+  become: true
+  tasks:
+    - include_tasks: tasks/cicd-tools.yml
+
+
+- name: Incluir tasks para configurar cicd
+  hosts: cicd
+  become: true
+  tasks:
+    - include_tasks: tasks/cicd.yml
+
+
+- name: Incluir tasks para configurar k3s
+  hosts: k3s
+  become: true
+  tasks:
+    - include_tasks: tasks/k3s.yml
+
+- name: Incluir tasks para configurar gitlab-ci
+  hosts: gitlab-ci
+  become: true
+  tasks:
+    - include_tasks: tasks/gitlab-ci.yml
