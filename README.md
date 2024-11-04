@@ -1,7 +1,6 @@
 Laboratório GCP - 524 - CI/CD: Integração e entrega continua com Jenkins, Nexus, Sonarqube, Gitlab-ci e Github actions - LC
 =============================
 
-### Deploy no Kubernetes
 
 Repositório para armazenar o Laboratório do curso de Integração e Entrega Continua com Git, Jenkins, Nexus e SonarQuebe da [4Linux][1]
 
@@ -41,7 +40,7 @@ gitlab-ci |
 Faça o processo de Clonagem: 
 
 ```bash
-git clone -b k3s https://github.com/4linux/524-gcp
+git clone https://github.com/4linux/524-gcp
 cd 524-gcp/
 ```
 
