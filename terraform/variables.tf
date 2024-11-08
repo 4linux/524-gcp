@@ -18,7 +18,7 @@ variable "default_zone" {
 
 
 variable "machine_type" {
-  default     = "n2-standard-4"
+  default     = "e2-standard-2"
   type        = string
   description = "Tamanho dos nodes do cluster gke"
 }
