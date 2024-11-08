@@ -15,11 +15,17 @@ resource "google_compute_instance" "vm_instances" {
     network    = google_compute_network.cicd_network.name
     subnetwork = google_compute_subnetwork.cicd_subnet.name
     access_config {
-      # Sem configuração de IP público
+      nat_ip = google_compute_address.static_ip[count.index].address
     }
   }
   metadata = {
     ssh-keys = "araujo_emerson28:${file("id_rsa_gcp.pub")}"
   }
 
+}
+
+resource "google_compute_address" "static_ip" {
+  count = 4
+  name  = ["cicd-ip", "cicd-tools-ip", "k3s-ip", "gitlab-ci-ip"][count.index]
+  region = var.default_region # Substitua pela região padrão desejada
 }
