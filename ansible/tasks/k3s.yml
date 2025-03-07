@@ -68,22 +68,22 @@
 
 - name: Criando o arquivo k3s.sh
   copy:
-    src: files/jenkins-k8s.yaml
+    src: files/github-actions-k8s.yaml
     dest: /root/
     owner: root
     group: root
     mode: '644'
 
-- name: Criando a conta de servico para o Jenkins
-  command: kubectl apply -f /root/jenkins-k8s.yaml
+- name: Criando a conta de servico para o github-actions
+  command: kubectl apply -f /root/github-actions-k8s.yaml
 
-- name: Extraindo o token criado para o Jenkins
-  shell: kubectl get secret jenkins-sa-token -o jsonpath={.data.token} -n jenkins-runner
+- name: Extraindo o token criado para o github-actions
+  shell: kubectl get secret github-actions-sa-token -o jsonpath={.data.token} -n github-actions-runner
   register: token
 
 - copy:
     content: '{{ token.stdout | b64decode }}'
-    dest: "/root/jenkins-token.txt"
+    dest: "/root/github-actions-token.txt"
 
 - name: Criando o arquivo registries.yaml
   copy:

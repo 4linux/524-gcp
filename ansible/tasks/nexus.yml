@@ -3,12 +3,7 @@
   user:
     name: suporte
     shell: /bin/bash
-    password : $1$QbUARykG$p2nthVG8AkDvabKPHwboa1
-
-- name: Adiciona usuario jenkins
-  user:
-    name: jenkins
-    shell: /bin/bash
+    password: "$1$QbUARykG$p2nthVG8AkDvabKPHwboa1"
 
 - name: Instala pacotes que permitem que o apt seja usado sobre HTTPS
   apt:
@@ -17,15 +12,15 @@
     update_cache: yes
   vars:
     packages:
-    - apt-transport-https
-    - ca-certificates
-    - curl
-    - gnupg-agent
-    - software-properties-common
-    - snapd
-    - git
-    - vim
-    - python3-docker
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+      - snapd
+      - git
+      - vim
+      - python3-docker
 
 - name: Adiciona uma chave de assinatura apt para o Docker
   apt_key:
@@ -49,7 +44,7 @@
     - containerd.io
     - docker-compose
     - kubectl
-  
+
 - name: Criando o arquivo daemon.json
   copy:
     src: files/daemon.json
@@ -64,11 +59,30 @@
     daemon_reload: yes
     state: restarted
 
-- name: /var/lib/jenkins/.kube
-  file:
-    path: /var/lib/jenkins/.kube
+- name: Cria diretorio do nexus
+  ansible.builtin.file:
+    path: /nexus
     state: directory
-    owner: jenkins
-    group: jenkins
+    mode: '0755'
 
+- name: Permissao diretorio nexus
+  ansible.builtin.file:
+    path: /nexus
+    state: directory
+    recurse: yes
+    owner: 200
+    group: 200
+
+- name: Criando container do Nexus
+  docker_container:
+    name: nexus
+    state: started
+    image: "sonatype/nexus3:3.68.1"
+    pull: true
+    ports:
+      - "8081:8081"
+      - "8082:8082"
+      - "8083:8083"
+    volumes:
+      - /nexus:/nexus-data
 
