@@ -1,8 +1,8 @@
-Laboratório GCP - 524 - CI/CD: Integração e entrega continua com Jenkins, Nexus, Sonarqube, Gitlab-ci e Github actions - LC
+Laboratório GCP - 524 - CI/CD: Integração e entrega continua com Git, Github, Github actions, Nexus, Sonarqube e ArgoCD - LC
 =============================
 
 
-Repositório para armazenar o Laboratório do curso de Integração e Entrega Continua com Git, Jenkins, Nexus e SonarQuebe da [4Linux][1]
+Repositório para armazenar o Laboratório do curso de Integração e Entrega Continua com Git, Github, Github actions, Nexus, Sonarqube e ArgoCD [4Linux][1]
 
 
 Dependências
@@ -28,10 +28,10 @@ Nesse laboratórios, que está centralizado no arquivo Terraform, serão criadas
 
 Nome       | 
 ---------- |
-cicd       |
-cicd-tools |
+nexus       |
+sonarqube|
 k3s    |
-gitlab-ci |
+
 
 
 ## Criação do Laboratório 
@@ -40,7 +40,7 @@ gitlab-ci |
 Faça o processo de Clonagem: 
 
 ```bash
-git clone https://github.com/4linux/524-gcp
+git clone -b github-actions https://github.com/4linux/524-gcp
 cd 524-gcp/
 ```
 
