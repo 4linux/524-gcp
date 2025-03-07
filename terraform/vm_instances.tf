@@ -1,6 +1,6 @@
 resource "google_compute_instance" "vm_instances" {
   count        = 4
-  name         = ["cicd", "cicd-tools", "k3s", "gitlab-ci"][count.index]
+  name         = ["sonarqube", "nexus", "k3s"][count.index]
   machine_type = var.machine_type # Substitua pelo tipo de máquina desejado
   zone = var.default_zone
 
