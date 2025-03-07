@@ -1,16 +1,16 @@
 ---
-- name: Incluir tasks para configurar cicd-tools
-  hosts: cicd-tools
+- name: Incluir tasks para configurar sonarqube
+  hosts: sonarqube
   become: true
   tasks:
-    - include_tasks: tasks/cicd-tools.yml
+    - include_tasks: tasks/sonarqube.yml
 
 
-- name: Incluir tasks para configurar cicd
-  hosts: cicd
+- name: Incluir tasks para configurar nexus
+  hosts: nexus
   become: true
   tasks:
-    - include_tasks: tasks/cicd.yml
+    - include_tasks: tasks/nexus.yml
 
 
 - name: Incluir tasks para configurar k3s
@@ -19,8 +19,8 @@
   tasks:
     - include_tasks: tasks/k3s.yml
 
-- name: Incluir tasks para configurar gitlab-ci
-  hosts: gitlab-ci
-  become: true
-  tasks:
-    - include_tasks: tasks/gitlab-ci.yml
+# - name: Incluir tasks para configurar gitlab-ci
+#   hosts: gitlab-ci
+#   become: true
+#   tasks:
+#     - include_tasks: tasks/gitlab-ci.yml
