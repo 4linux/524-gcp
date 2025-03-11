@@ -1,5 +1,5 @@
 resource "google_compute_instance" "vm_instances" {
-  count        = 4
+  count        = 3
   name         = ["sonarqube", "nexus", "k3s"][count.index]
   machine_type = var.machine_type # Substitua pelo tipo de máquina desejado
   zone = var.default_zone
@@ -25,7 +25,7 @@ resource "google_compute_instance" "vm_instances" {
 }
 
 resource "google_compute_address" "static_ip" {
-  count = 4
-  name  = ["cicd-ip", "cicd-tools-ip", "k3s-ip", "gitlab-ci-ip"][count.index]
+  count = 3
+  name  = ["sonarqube-ip", "nexus-ip", "k3s-ip"][count.index]
   region = var.default_region # Substitua pela região padrão desejada
 }
