@@ -1,0 +1,8 @@
+mirrors:
+  "{{ ansible_host }}:8082":
+    endpoint:
+      - "http://{{ ansible_host }}:8082"
+configs:
+  "{{ ansible_host }}:8082":
+    tls:
+      insecure_skip_verify: true

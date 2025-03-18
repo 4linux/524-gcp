@@ -7,6 +7,7 @@ resource "google_compute_instance" "vm_instances" {
   boot_disk {
     initialize_params {
       image = "projects/debian-cloud/global/images/family/debian-11" # Imagem Debian
+      size  = 20 
     }
   }
 
@@ -19,7 +20,7 @@ resource "google_compute_instance" "vm_instances" {
     }
   }
   metadata = {
-    ssh-keys = "araujo_emerson28:${file("id_rsa_gcp.pub")}"
+    ssh-keys = "emerson_silva:${file("github-actions.pub")}"
   }
 
 }

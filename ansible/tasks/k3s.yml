@@ -63,10 +63,53 @@
 - name: Instalando k3s via script 
   command: sh /root/k3s.sh
 
+- name: Criando o arquivo registries.yaml
+  copy:
+    src: files/registries.yaml.j2
+    dest: /etc/rancher/k3s/registries.yaml
+    owner: root
+    group: root
+    mode: '644'
+
+
 - name: Configurando add-on de rede 
   command: kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/master/manifests/calico-typha.yaml
 
-- name: Criando o arquivo k3s.sh
+- name: Restart k3s
+  command: systemctl restart k3s
+
+- name: Criar arquivo de variáveis do K3s
+  template:
+    src: files/k3s.service.env.j2
+    dest: /etc/systemd/system/k3s.service.env
+    owner: root
+    group: root
+    mode: '600'
+
+
+- name: Criando o arquivo k3s.service
+  copy:
+    src: files/k3s.service
+    dest: /etc/systemd/system/k3s.service
+    owner: root
+    group: root
+    mode: '644'
+
+- name: Recarregar o daemon do systemd
+  command: systemctl daemon-reload
+
+- name: Restart k3s
+  command: systemctl restart k3s
+
+- name: Substituir o servidor no arquivo k3s.yaml
+  replace:
+    path: /etc/rancher/k3s/k3s.yaml
+    regexp: 'server: https://[0-9\.]+:6443'
+    replace: 'server: https://{{ ansible_host }}:6443'
+
+
+
+- name: Criando o github-actions token
   copy:
     src: files/github-actions-k8s.yaml
     dest: /root/
@@ -85,16 +128,6 @@
     content: '{{ token.stdout | b64decode }}'
     dest: "/root/github-actions-token.txt"
 
-- name: Criando o arquivo registries.yaml
-  copy:
-    src: files/registries.yaml
-    dest: /etc/rancher/k3s/
-    owner: root
-    group: root
-    mode: '644'
-
-- name: Restart k3s
-  command: systemctl restart k3s
 
 - name: Cria ingress nginx
   command: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.2/deploy/static/provider/cloud/deploy.yaml

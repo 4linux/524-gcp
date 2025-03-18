@@ -6,7 +6,7 @@ set -e
 # Variáveis
 TERRAFORM_DIR="terraform"
 ANSIBLE_PLAYBOOK="ansible/cicd-playbook.yml"
-INVENTORY_FILE="$TERRAFORM_DIR/inventory"
+INVENTORY_FILE="terraform/inventory"
 
 # Função de log para saída formatada
 log() {
@@ -28,7 +28,7 @@ log "Terraform apply concluído."
 ### Gerando inventário dinâmico
 log "Gerando inventário dinâmico.. Aguarde."
 
-cd terraform && ./inventory.sh && cd ..
+cd terraform &&  bash inventory.bash && cd ..
 log "Criação de inventário concluído."
 
 
@@ -40,10 +40,10 @@ ansible -i "$INVENTORY_FILE" all -m ping \
 log "Configuração com Ansible concluída."
 
 
-
 ### Inicializando infra com Ansible
 log "Inicializando configurações com Ansible... Aguarde."
 
 ansible-playbook "$ANSIBLE_PLAYBOOK" -i "$INVENTORY_FILE" \
   --ssh-extra-args='-o StrictHostKeyChecking=no'
 log "Configuração com Ansible concluída."
+

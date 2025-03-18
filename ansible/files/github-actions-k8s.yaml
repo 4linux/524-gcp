@@ -1,18 +1,18 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: jenkins-runner
+  name: github-actions-runner
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: jenkins-sa
-  namespace: jenkins-runner
+  name: github-actions-sa
+  namespace: github-actions-runner
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: jenkins
+  name: github-actions
 rules:
 - apiGroups:
   - ""
@@ -29,29 +29,29 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: jenkins-role-binding
+  name: github-actions-role-binding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: jenkins
+  name: github-actions
 subjects:
 - kind: ServiceAccount
-  name: jenkins-sa
-  namespace: jenkins-runner
+  name: github-actions-sa
+  namespace: github-actions-runner
 ---
 apiVersion: v1
 kind: Secret
 type: kubernetes.io/service-account-token
 metadata:
-  name: jenkins-sa-token
-  namespace: jenkins-runner
+  name: github-actions-sa-token
+  namespace: github-actions-runner
   annotations:
-    kubernetes.io/service-account.name: "jenkins-sa"
+    kubernetes.io/service-account.name: "github-actions-sa"
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: jenkins-default-rbac
+  name: github-actions-default-rbac
 subjects:
   - kind: ServiceAccount
     name: default

@@ -5,10 +5,6 @@
     shell: /bin/bash
     password : $1$QbUARykG$p2nthVG8AkDvabKPHwboa1
 
-- name: Adiciona usuario jenkins
-  user:
-    name: jenkins
-    shell: /bin/bash
 
 - name: Instala pacotes que permitem que o apt seja usado sobre HTTPS
   apt:
@@ -63,14 +59,6 @@
     name: docker
     daemon_reload: yes
     state: restarted
-
-- name: /var/lib/jenkins/.kube
-  file:
-    path: /var/lib/jenkins/.kube
-    state: directory
-    owner: jenkins
-    group: jenkins
-
 
 - name: Criando container do SonarQube
   docker_container:

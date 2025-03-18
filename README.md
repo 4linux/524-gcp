@@ -44,6 +44,13 @@ git clone -b github-actions https://github.com/4linux/524-gcp
 cd 524-gcp/
 ```
 
+Crie chave SSH:
+
+```bash
+ssh-keygen -t ed25519 -C "github-actions" -f terraform/github-actions
+```
+
+
 Em `terraform/variables.tf` edite a linha 4 com o ID do seu Projeto que criamos na GCP. 
 
 Após isso, certifique-se de logar na GCP usando o `gcloud CLI`
