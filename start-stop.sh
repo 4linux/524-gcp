@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configurações
-VMS=("cicd" "cicd-tools" "k3s" "gitlab-ci")
+VMS=("sonarqube" "nexus" "k3s")
 ZONE="us-central1-c"  # Substituir pela zona correta
 
 # Função para ligar VMs
