@@ -20,7 +20,7 @@ resource "google_compute_instance" "vm_instances" {
     }
   }
   metadata = {
-    ssh-keys = "emerson_silva:${file("github-actions.pub")}"
+    ssh-keys = "devops:${file("github-actions.pub")}"
   }
 
 }

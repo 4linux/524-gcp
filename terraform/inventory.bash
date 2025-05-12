@@ -9,11 +9,11 @@ ip_array=($ips)
 # Criar o arquivo inventory
 cat <<EOL > inventory
 [sonarqube]
-${ip_array[0]} ansible_user=emerson_silva ansible_ssh_private_key_file=terraform/github-actions
+${ip_array[0]} ansible_user=devops ansible_ssh_private_key_file=terraform/github-actions
 
 [nexus]
-${ip_array[1]} ansible_user=emerson_silva ansible_ssh_private_key_file=terraform/github-actions
+${ip_array[1]} ansible_user=devops ansible_ssh_private_key_file=terraform/github-actions
 
 [k3s]
-${ip_array[2]} ansible_user=emerson_silva ansible_ssh_private_key_file=terraform/github-actions
+${ip_array[2]} ansible_user=devops ansible_ssh_private_key_file=terraform/github-actions
 EOL

@@ -1,8 +1,8 @@
 [sonarqube]
-34.69.212.158 ansible_user=emerson_silva ansible_ssh_private_key_file=terraform/github-actions
+34.59.63.166 ansible_user=devops ansible_ssh_private_key_file=terraform/github-actions
 
 [nexus]
-34.57.73.82 ansible_user=emerson_silva ansible_ssh_private_key_file=terraform/github-actions
+34.44.216.196 ansible_user=devops ansible_ssh_private_key_file=terraform/github-actions
 
 [k3s]
-34.31.195.10 ansible_user=emerson_silva ansible_ssh_private_key_file=terraform/github-actions
+34.57.124.38 ansible_user=devops ansible_ssh_private_key_file=terraform/github-actions

@@ -1,7 +1,7 @@
 variable "gcp_project" {
   description = "Projeto para provisionamento da infra"
   type        = string
-  default     = "" #Project ID
+  default     = "gcp-4linux" #Project ID
 }
 
 variable "default_region" {
