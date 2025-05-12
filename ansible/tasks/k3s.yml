@@ -1,158 +1,134 @@
----        
-- name: Instala pacotes que permitem que o apt seja usado sobre HTTPS
+---
+- name: Atualiza cache e instala pacotes básicos
   apt:
-    name: "{{ packages }}"
-    state: present
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+      - snapd
+      - python3
+      - python3-pip
+      - git
+      - vim
     update_cache: yes
-  vars:
-    packages:
-    - apt-transport-https
-    - ca-certificates
-    - curl
-    - gnupg-agent
-    - software-properties-common
-    - snapd
-    - python
-    - git
-    - vim
-    - python3-docker
+    state: present
 
-- name: Adiciona uma chave de assinatura apt para o Docker
+- name: Adiciona chave GPG do Docker
   apt_key:
     url: https://download.docker.com/linux/ubuntu/gpg
     state: present
 
-- name: Adiciona repositorio apt para versao estavel
+- name: Adiciona repositório do Docker
   apt_repository:
-    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu xenial stable
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
     state: present
 
-- name: Instala o Docker e suas dependencias
+- name: Instala Docker
   apt:
-    name: "{{ packages }}"
-    state: present
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
     update_cache: yes
-  vars:
-    packages:
-    - docker-ce
-    - docker-ce-cli
-    - containerd.io
+    state: present
 
-- name: Criando o arquivo daemon.json
+- name: Cria diretório de configuração do containerd
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: Copia daemon.json do Docker
   copy:
     src: files/daemon.json
-    dest: /etc/docker/
+    dest: /etc/docker/daemon.json
     owner: root
     group: root
     mode: '0644'
 
-- name: Reinicia o Docker
+- name: Reinicia Docker
   service:
     name: docker
-    daemon_reload: yes
     state: restarted
+    enabled: yes
 
-- name: Criando o arquivo k3s.sh
-  copy:
-    src: files/k3s.sh
-    dest: /root/
-    owner: root
-    group: root
-    mode: '777'
+- name: Cria diretório de instalação do K3s
+  file:
+    path: /usr/local/bin
+    state: directory
+    mode: '0755'
 
-- name: Instalando k3s via script 
-  command: sh /root/k3s.sh
+- name: Instala o K3s como servidor
+  shell: curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--disable traefik" sh -
+  args:
+    creates: /etc/systemd/system/k3s.service
 
-- name: Criando o arquivo registries.yaml
-  copy:
-    src: files/registries.yaml.j2
-    dest: /etc/rancher/k3s/registries.yaml
-    owner: root
-    group: root
-    mode: '644'
+# - name: Cria diretório de configuração do K3s
+#   file:
+#     path: /etc/rancher/k3s
+#     state: directory
+#     mode: '0755'
 
+# - name: Copia registries.yaml
+#   copy:
+#     src: files/registries.yaml.j2
+#     dest: /etc/rancher/k3s/registries.yaml
+#     owner: root
+#     group: root
+#     mode: '0644'
 
-- name: Configurando add-on de rede 
-  command: kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/master/manifests/calico-typha.yaml
+# - name: Copia k3s.service.env
+#   template:
+#     src: files/k3s.service.env.j2
+#     dest: /etc/systemd/system/k3s.service.env
+#     owner: root
+#     group: root
+#     mode: '0600'
 
-- name: Restart k3s
-  command: systemctl restart k3s
+# - name: Copia k3s.service
+#   copy:
+#     src: files/k3s.service
+#     dest: /etc/systemd/system/k3s.service
+#     owner: root
+#     group: root
+#     mode: '0644'
 
-- name: Criar arquivo de variáveis do K3s
-  template:
-    src: files/k3s.service.env.j2
-    dest: /etc/systemd/system/k3s.service.env
-    owner: root
-    group: root
-    mode: '600'
+# - name: Recarrega daemon do systemd
+#   command: systemctl daemon-reexec
 
+- name: Ativa e inicia K3s
+  service:
+    name: k3s
+    state: started
+    enabled: yes
 
-- name: Criando o arquivo k3s.service
-  copy:
-    src: files/k3s.service
-    dest: /etc/systemd/system/k3s.service
-    owner: root
-    group: root
-    mode: '644'
+# - name: Substitui IP no kubeconfig
+#   replace:
+#     path: /etc/rancher/k3s/k3s.yaml
+#     regexp: 'server: https://[0-9\.]+:6443'
+#     replace: 'server: https://{{ ansible_host }}:6443'
 
-- name: Recarregar o daemon do systemd
-  command: systemctl daemon-reload
+- name: Aplica o ingress-nginx
+  shell: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.2/deploy/static/provider/cloud/deploy.yaml
 
-- name: Restart k3s
-  command: systemctl restart k3s
-
-- name: Substituir o servidor no arquivo k3s.yaml
-  replace:
-    path: /etc/rancher/k3s/k3s.yaml
-    regexp: 'server: https://[0-9\.]+:6443'
-    replace: 'server: https://{{ ansible_host }}:6443'
-
-
-
-- name: Criando o github-actions token
-  copy:
-    src: files/github-actions-k8s.yaml
-    dest: /root/
-    owner: root
-    group: root
-    mode: '644'
-
-- name: Criando a conta de servico para o github-actions
-  command: kubectl apply -f /root/github-actions-k8s.yaml
-
-- name: Extraindo o token criado para o github-actions
-  shell: kubectl get secret github-actions-sa-token -o jsonpath={.data.token} -n github-actions-runner
-  register: token
-
-- copy:
-    content: '{{ token.stdout | b64decode }}'
-    dest: "/root/github-actions-token.txt"
-
-
-- name: Cria ingress nginx
-  command: kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.1.2/deploy/static/provider/cloud/deploy.yaml
-
-- name: Copia Config Nginx
+- name: Copia ingress-nginx.yaml adicional
   copy:
     src: files/ingress-nginx.yaml
     dest: /root/
-    owner: root
-    group: root
-    mode: '644'
+    mode: '0644'
 
-- name: Criando SVC nginx
+- name: Aplica ingress-nginx.yaml
   command: kubectl apply -f /root/ingress-nginx.yaml
 
-- name: Cria diretorio do homolog
-  ansible.builtin.file:
+- name: Cria diretório de homolog
+  file:
     path: /root/homolog
     state: directory
     mode: '0755'
 
-- name: Copia Config Homolog
-  copy: 
-    src: manifestos/homolog
-    dest: /root/
-    owner: root
-    group: root
-    mode: '644'
+- name: Copia manifestos da homologação
+  copy:
+    src: manifestos/homolog/
+    dest: /root/homolog/
+    mode: '0644'
